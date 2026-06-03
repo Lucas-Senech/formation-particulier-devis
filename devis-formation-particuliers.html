@@ -37,7 +37,7 @@
 
     /* ─── HERO ─── */
     .hero {
-      background: var(--orange);
+      background: linear-gradient(160deg, #0a0a0a 0%, #141414 45%, #1a1a1a 100%);
       position: relative;
       overflow: hidden;
       padding: 80px 24px 100px;
@@ -48,7 +48,7 @@
       top: -60px; right: -80px;
       width: 420px; height: 420px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.08);
       pointer-events: none;
     }
     .hero::after {
@@ -57,7 +57,7 @@
       bottom: -100px; left: -60px;
       width: 320px; height: 320px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.07);
+      background: rgba(255,255,255,0.06);
       pointer-events: none;
     }
     .hero-inner {
@@ -109,16 +109,24 @@
       flex-wrap: wrap;
       gap: 10px;
       padding-top: 4px;
-      border-top: 1px solid rgba(255,255,255,0.2);
+      border-top: 1px solid rgba(255,255,255,0.12);
     }
     .pill {
-      background: rgba(255,255,255,0.18);
-      color: #fff;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.95) 0%,
+        rgba(220,220,220,0.88) 42%,
+        rgba(180,180,180,0.75) 100%
+      );
+      color: #1a1a1a;
       font-size: 13px;
       font-weight: 500;
       padding: 8px 16px;
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.28);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.9);
       white-space: nowrap;
     }
     @media (max-width: 640px) {
@@ -300,19 +308,6 @@
       line-height: 1.5;
     }
     .form-error.show { display: block; }
-    .btn-reset {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border-strong);
-      padding: 14px 20px;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.12s;
-    }
-    .btn-reset:hover { background: var(--bg); color: var(--text); }
-
     /* ─── SUCCÈS ─── */
     .success-screen {
       display: none;
@@ -384,10 +379,10 @@
         </div>
         <div class="hero-body">
           <h1>Formez vos résidents aux<br><em>gestes qui sauvent</em></h1>
-          <p class="hero-sub">Une formation pratique de 1h00 directement dans votre immeuble. Manipulation d'extincteurs, risques à domicile, évacuation — accessible à tous.</p>
+          <p class="hero-sub">Une formation pratique de 1h00, idéalement dans la cour de votre immeuble ou dans nos locaux. Manipulation d'extincteurs, risques à domicile, évacuation — accessible à tous.</p>
           <div class="hero-pills">
             <span class="pill">✓ 1h00 chrono</span>
-            <span class="pill">✓ Pratique avant tout</span>
+            <span class="pill">✓ Pratique et Théorique</span>
             <span class="pill">✓ Devis rapide</span>
           </div>
         </div>
@@ -430,8 +425,14 @@
               <input type="text" id="f-syndic" name="Syndic / société" placeholder="Cabinet Dupont Gestion" required />
             </div>
             <div class="fgroup">
-              <label for="f-contact">Votre nom *</label>
-              <input type="text" id="f-contact" name="Nom du contact" placeholder="Marie Laurent" required />
+              <label for="f-contact">Nom du gestionnaire *</label>
+              <input type="text" id="f-contact" name="Nom du gestionnaire" placeholder="Marie Laurent" required />
+            </div>
+          </div>
+          <div class="frow full">
+            <div class="fgroup">
+              <label for="f-adresse-syndic">Adresse du syndic *</label>
+              <input type="text" id="f-adresse-syndic" name="Adresse du syndic" placeholder="5 place Kléber, Strasbourg 67000" required />
             </div>
           </div>
           <div class="frow">
@@ -452,7 +453,7 @@
           <div class="frow full">
             <div class="fgroup">
               <label for="f-adresse">Adresse de l'immeuble</label>
-              <input type="text" id="f-adresse" name="Adresse immeuble" placeholder="12 rue des Fleurs, Paris 75011" />
+              <input type="text" id="f-adresse" name="Adresse immeuble" placeholder="18 rue des Grandes Arcades, Strasbourg 67000" />
             </div>
           </div>
           <div class="frow">
@@ -463,7 +464,6 @@
                 <option value="petit">Petit immeuble (moins de 10 logements)</option>
                 <option value="moyen">Immeuble moyen (10 à 30 logements)</option>
                 <option value="grand">Grand immeuble (plus de 30 logements)</option>
-                <option value="gardien">Résidence avec gardien</option>
               </select>
             </div>
             <div class="fgroup">
@@ -473,17 +473,15 @@
           </div>
           <div class="frow">
             <div class="fgroup">
-              <label for="f-dispo">Disponibilité souhaitée</label>
-              <input type="text" id="f-dispo" name="Disponibilité" placeholder="Ex : samedi matin, semaine du 15..." />
+              <label for="f-dispo">Disponibilité souhaitée (hors weekend)</label>
+              <input type="text" id="f-dispo" name="Disponibilité (hors weekend)" placeholder="Ex : mardi matin, semaine du 15..." />
             </div>
             <div class="fgroup">
               <label for="f-lieu">Lieu de la formation</label>
               <select id="f-lieu" name="Lieu de la formation">
                 <option value="">Sélectionner...</option>
-                <option>Parties communes de l'immeuble</option>
-                <option>Salle de réunion copropriété</option>
                 <option>Extérieur / cour intérieure</option>
-                <option>À définir ensemble</option>
+                <option>Dans nos locaux</option>
               </select>
             </div>
           </div>
@@ -498,13 +496,6 @@
               <div class="cb-text">
                 <div class="cb-title">Manipulation extincteurs (pratique sur feu)</div>
                 <div class="cb-sub">Inclus par défaut — chaque résident s'entraîne sur bac à flamme</div>
-              </div>
-            </label>
-            <label class="cb-item">
-              <input type="checkbox" checked />
-              <div class="cb-text">
-                <div class="cb-title">Sensibilisation aux risques incendie à domicile</div>
-                <div class="cb-sub">Cuisine, électricité, bougies, chargeurs, comportements dangereux</div>
               </div>
             </label>
             <label class="cb-item">
@@ -531,7 +522,6 @@
         <!-- ACTIONS -->
         <p class="form-error" id="form-error" role="alert"></p>
         <div class="form-actions">
-          <button type="reset" class="btn-reset">Réinitialiser</button>
           <button type="submit" class="btn-submit" id="btn-submit">Envoyer ma demande de devis →</button>
         </div>
         <input type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" />
@@ -561,8 +551,7 @@
     const TYPE_LABELS = {
       petit: 'Petit immeuble (moins de 10 logements)',
       moyen: 'Immeuble moyen (10 à 30 logements)',
-      grand: 'Grand immeuble (plus de 30 logements)',
-      gardien: 'Résidence avec gardien'
+      grand: 'Grand immeuble (plus de 30 logements)'
     };
 
     function hideFormError() {
@@ -589,7 +578,6 @@
       const checkboxes = document.querySelectorAll('.cb-list input[type=checkbox]');
       const labels = [
         'Manipulation extincteurs',
-        'Risques incendie domicile',
         'Procédures évacuation'
       ];
       const modules = [];
@@ -617,7 +605,7 @@
       hideFormError();
       if (document.getElementById('f-honey').value) return false;
 
-      const required = ['f-syndic', 'f-contact', 'f-email', 'f-residents'];
+      const required = ['f-syndic', 'f-contact', 'f-adresse-syndic', 'f-email', 'f-residents'];
       let valid = true;
       required.forEach(id => {
         const el = document.getElementById(id);
@@ -644,8 +632,6 @@
       btn.disabled = true;
       btn.textContent = 'Envoi en cours…';
     });
-
-    document.getElementById('devis-form').addEventListener('reset', hideFormError);
 
     function showForm() {
       document.getElementById('devis-form').style.display = 'block';
