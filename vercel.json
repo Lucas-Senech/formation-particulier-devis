@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/devis-formation-particuliers.html" }
+  ]
+}
