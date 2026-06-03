@@ -406,7 +406,20 @@
         <p>Remplissez ce formulaire — nous vous répondons rapidement, sans engagement</p>
       </div>
 
-      <div class="form-body" id="form-body">
+      <form
+        id="devis-form"
+        class="form-body"
+        action="https://formsubmit.co/ia.builder@ringenwald.fr"
+        method="POST"
+        accept-charset="UTF-8"
+      >
+        <input type="hidden" name="_subject" value="Demande de devis — Formation sécurité incendie" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_next" id="f-next" value="" />
+        <input type="hidden" name="_replyto" id="f-replyto" value="" />
+        <input type="hidden" name="Type d'immeuble" id="f-type-label" value="" />
+        <input type="hidden" name="Contenus souhaités" id="f-modules" value="" />
 
         <!-- CONTACT -->
         <div class="fsection">
@@ -414,21 +427,21 @@
           <div class="frow">
             <div class="fgroup">
               <label for="f-syndic">Nom du syndic / société *</label>
-              <input type="text" id="f-syndic" placeholder="Cabinet Dupont Gestion" />
+              <input type="text" id="f-syndic" name="Syndic / société" placeholder="Cabinet Dupont Gestion" required />
             </div>
             <div class="fgroup">
               <label for="f-contact">Votre nom *</label>
-              <input type="text" id="f-contact" placeholder="Marie Laurent" />
+              <input type="text" id="f-contact" name="Nom du contact" placeholder="Marie Laurent" required />
             </div>
           </div>
           <div class="frow">
             <div class="fgroup">
               <label for="f-email">Email *</label>
-              <input type="email" id="f-email" placeholder="contact@syndic.fr" />
+              <input type="email" id="f-email" name="email" placeholder="contact@syndic.fr" required />
             </div>
             <div class="fgroup">
               <label for="f-tel">Téléphone</label>
-              <input type="tel" id="f-tel" placeholder="06 XX XX XX XX" />
+              <input type="tel" id="f-tel" name="Téléphone" placeholder="06 XX XX XX XX" />
             </div>
           </div>
         </div>
@@ -439,7 +452,7 @@
           <div class="frow full">
             <div class="fgroup">
               <label for="f-adresse">Adresse de l'immeuble</label>
-              <input type="text" id="f-adresse" placeholder="12 rue des Fleurs, Paris 75011" />
+              <input type="text" id="f-adresse" name="Adresse immeuble" placeholder="12 rue des Fleurs, Paris 75011" />
             </div>
           </div>
           <div class="frow">
@@ -455,17 +468,17 @@
             </div>
             <div class="fgroup">
               <label for="f-residents">Nombre de résidents attendus *</label>
-              <input type="number" id="f-residents" min="1" max="300" placeholder="ex : 20" />
+              <input type="number" id="f-residents" name="Nombre de résidents" min="1" max="300" placeholder="ex : 20" required />
             </div>
           </div>
           <div class="frow">
             <div class="fgroup">
               <label for="f-dispo">Disponibilité souhaitée</label>
-              <input type="text" id="f-dispo" placeholder="Ex : samedi matin, semaine du 15..." />
+              <input type="text" id="f-dispo" name="Disponibilité" placeholder="Ex : samedi matin, semaine du 15..." />
             </div>
             <div class="fgroup">
               <label for="f-lieu">Lieu de la formation</label>
-              <select id="f-lieu">
+              <select id="f-lieu" name="Lieu de la formation">
                 <option value="">Sélectionner...</option>
                 <option>Parties communes de l'immeuble</option>
                 <option>Salle de réunion copropriété</option>
@@ -510,7 +523,7 @@
           <div class="frow full">
             <div class="fgroup">
               <label for="f-notes">Contraintes ou demandes particulières</label>
-              <textarea id="f-notes" placeholder="Ex : accès PMR, présence de personnes âgées, langue souhaitée, matériel disponible sur place..."></textarea>
+              <textarea id="f-notes" name="Notes" placeholder="Ex : accès PMR, présence de personnes âgées, langue souhaitée, matériel disponible sur place..."></textarea>
             </div>
           </div>
         </div>
@@ -518,12 +531,12 @@
         <!-- ACTIONS -->
         <p class="form-error" id="form-error" role="alert"></p>
         <div class="form-actions">
-          <button type="button" class="btn-reset" onclick="resetForm()">Réinitialiser</button>
-          <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">Envoyer ma demande de devis →</button>
+          <button type="reset" class="btn-reset">Réinitialiser</button>
+          <button type="submit" class="btn-submit" id="btn-submit">Envoyer ma demande de devis →</button>
         </div>
-        <input type="text" id="f-honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" />
+        <input type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" />
 
-      </div><!-- /form-body -->
+      </form><!-- /form-body -->
 
       <!-- SUCCÈS -->
       <div class="success-screen" id="success-screen">
@@ -566,26 +579,48 @@
     }
 
     function showSuccessScreen() {
-      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('devis-form').style.display = 'none';
       document.getElementById('success-screen').classList.add('show');
       hideFormError();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function submitForm() {
-      hideFormError();
-
-      if (document.getElementById('f-honey').value) return;
-
-      const required = [
-        { id: 'f-syndic', label: 'Nom du syndic' },
-        { id: 'f-contact', label: 'Votre nom' },
-        { id: 'f-email', label: 'Email' },
-        { id: 'f-residents', label: 'Nombre de résidents' }
+    function collectModules() {
+      const checkboxes = document.querySelectorAll('.cb-list input[type=checkbox]');
+      const labels = [
+        'Manipulation extincteurs',
+        'Risques incendie domicile',
+        'Procédures évacuation'
       ];
+      const modules = [];
+      checkboxes.forEach((c, i) => {
+        if (c.checked) modules.push(labels[i]);
+      });
+      return modules;
+    }
+
+    function prepareFormSubmit() {
+      const typeValue = document.getElementById('f-type').value;
+      const typeSelect = document.getElementById('f-type');
+      document.getElementById('f-type-label').value =
+        TYPE_LABELS[typeValue] || typeSelect.options[typeSelect.selectedIndex].text || '—';
+      document.getElementById('f-modules').value =
+        collectModules().join(' · ') || '—';
+      document.getElementById('f-replyto').value = document.getElementById('f-email').value.trim();
+      const returnUrl = new URL(window.location.href);
+      returnUrl.search = 'sent=1';
+      returnUrl.hash = '';
+      document.getElementById('f-next').value = returnUrl.toString();
+    }
+
+    function validateForm() {
+      hideFormError();
+      if (document.getElementById('f-honey').value) return false;
+
+      const required = ['f-syndic', 'f-contact', 'f-email', 'f-residents'];
       let valid = true;
-      required.forEach(f => {
-        const el = document.getElementById(f.id);
+      required.forEach(id => {
+        const el = document.getElementById(id);
         if (!el.value.trim()) {
           el.classList.add('error');
           el.addEventListener('input', () => el.classList.remove('error'), { once: true });
@@ -595,100 +630,50 @@
       if (!valid) {
         const firstError = document.querySelector('.error');
         if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return valid;
+    }
+
+    document.getElementById('devis-form').addEventListener('submit', function (e) {
+      if (!validateForm()) {
+        e.preventDefault();
         return;
       }
-
-      const data = collectData();
+      prepareFormSubmit();
       const btn = document.getElementById('btn-submit');
-      const defaultLabel = btn.textContent;
       btn.disabled = true;
       btn.textContent = 'Envoi en cours…';
+    });
 
-      try {
-        const response = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(DEVIS_EMAIL), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            _subject: 'Demande de devis — Formation sécurité incendie',
-            _template: 'table',
-            _captcha: 'false',
-            _replyto: data.email,
-            'Syndic / société': data.syndic,
-            'Nom du contact': data.contact,
-            'Email': data.email,
-            'Téléphone': data.tel || '—',
-            'Adresse immeuble': data.adresse || '—',
-            'Type d\'immeuble': data.typeLabel || '—',
-            'Nombre de résidents': data.residents,
-            'Disponibilité': data.dispo || '—',
-            'Lieu de la formation': data.lieu || '—',
-            'Contenus souhaités': data.modules.length ? data.modules.join(' · ') : '—',
-            'Notes': data.notes || '—'
-          })
-        });
-
-        const result = await response.json();
-        if (!response.ok || result.success === 'false') {
-          throw new Error('send_failed');
-        }
-
-        showSuccessScreen();
-      } catch {
-        showFormError(
-          'L\'envoi a échoué. Réessayez dans un instant ou écrivez-nous directement à ' + DEVIS_EMAIL + '.'
-        );
-      } finally {
-        btn.disabled = false;
-        btn.textContent = defaultLabel;
-      }
-    }
-
-    function collectData() {
-      const checkboxes = document.querySelectorAll('.cb-list input[type=checkbox]');
-      const modules = [];
-      checkboxes.forEach((c, i) => {
-        const labels = [
-          'Manipulation extincteurs',
-          'Risques incendie domicile',
-          'Procédures évacuation'
-        ];
-        if (c.checked) modules.push(labels[i]);
-      });
-      const typeValue = document.getElementById('f-type').value;
-      return {
-        syndic: document.getElementById('f-syndic').value.trim(),
-        contact: document.getElementById('f-contact').value.trim(),
-        email: document.getElementById('f-email').value.trim(),
-        tel: document.getElementById('f-tel').value.trim(),
-        adresse: document.getElementById('f-adresse').value.trim(),
-        type: typeValue,
-        typeLabel: TYPE_LABELS[typeValue] || typeValue,
-        residents: document.getElementById('f-residents').value.trim(),
-        dispo: document.getElementById('f-dispo').value.trim(),
-        lieu: document.getElementById('f-lieu').value,
-        modules,
-        notes: document.getElementById('f-notes').value.trim()
-      };
-    }
-
-    function resetForm() {
-      hideFormError();
-      document.querySelectorAll('#form-body input, #form-body select, #form-body textarea').forEach(el => {
-        if (el.id === 'f-honey') return;
-        if (el.type === 'checkbox') el.checked = el.defaultChecked;
-        else el.value = '';
-        el.classList.remove('error');
-      });
-    }
+    document.getElementById('devis-form').addEventListener('reset', hideFormError);
 
     function showForm() {
-      document.getElementById('form-body').style.display = 'block';
+      document.getElementById('devis-form').style.display = 'block';
       document.getElementById('success-screen').classList.remove('show');
-      resetForm();
+      document.getElementById('devis-form').reset();
+      hideFormError();
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = false;
+      btn.textContent = 'Envoyer ma demande de devis →';
     }
+
+    (function initFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('sent') === '1') {
+        showSuccessScreen();
+        params.delete('sent');
+        const cleanUrl = params.toString()
+          ? window.location.pathname + '?' + params.toString()
+          : window.location.pathname;
+        history.replaceState(null, '', cleanUrl);
+        return;
+      }
+      if (window.location.protocol === 'file:') {
+        showFormError(
+          'Ouvrez cette page via votre site Vercel (pas en fichier local) pour que l\'envoi fonctionne.'
+        );
+      }
+    })();
   </script>
 </body>
 </html>
